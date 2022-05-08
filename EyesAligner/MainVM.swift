@@ -82,12 +82,10 @@ class MainVM: NSObject {
     // 5- perform face detection command
     private func detectFace(in image: CVPixelBuffer) {
         let faceDetectionRequest = VNDetectFaceLandmarksRequest(completionHandler: { (request: VNRequest, error: Error?) in
-            DispatchQueue.main.async {
-                if let results = request.results as? [VNFaceObservation] {
-                    self.viewDelegate?.handleFaceDetectionResults(results)
-                } else {
-                    self.viewDelegate?.clearDrawings()
-                }
+            if let faces = request.results as? [VNFaceObservation], let firstFace = faces.first {
+                self.viewDelegate?.handleFaceDetectionResults(firstFace)
+            } else {
+                self.viewDelegate?.clearDrawings()
             }
         })
         let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: image, orientation: .leftMirrored, options: [:])
