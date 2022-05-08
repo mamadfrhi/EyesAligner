@@ -163,9 +163,5 @@ extension MainVC: MainVMViewDelegate {
     
     func clearDrawings() {
         self.drawings.forEach({ drawing in drawing.removeFromSuperlayer() })
-        //prevent goldenArea to remove
-        DispatchQueue.main.async {
-            self.view.layer.addSublayer(self.drawGoldenArea())
-        }
     }
 }
