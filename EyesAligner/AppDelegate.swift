@@ -16,6 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         let mainVM = MainVM()
         window!.rootViewController = MainVC.`init`(mainVM: mainVM)
+        mainVM.start()
         
         return true
     }

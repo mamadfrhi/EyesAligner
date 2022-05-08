@@ -19,7 +19,7 @@ class MainVM: NSObject {
     
     func start() {
         self.addCameraInput()
-        viewDelegate?.configPreviewLayer()
+        viewDelegate!.configPreviewLayer()
         self.getCameraFrames()
         self.captureSession.startRunning()
     }
