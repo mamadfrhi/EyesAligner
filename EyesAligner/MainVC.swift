@@ -46,25 +46,21 @@ class MainVC: UIViewController {
     
     class func `init`(mainVM: MainVM) -> MainVC {
         let vc = MainVC()
-        vc.viewModel = mainVM
+        vc.mainVM = mainVM
         return vc
     }
     
-    var viewModel: MainVM! {
-        didSet {
-            viewModel.viewDelegate = self
-        }
-    }
-    
-    private lazy var previewLayer = AVCaptureVideoPreviewLayer(session: viewModel.captureSession)
-    
-    private var drawings: [CAShapeLayer] = []
-    
-    private var mainVM: MainVM? {
+    var mainVM: MainVM! {
         didSet {
             mainVM!.viewDelegate = self
         }
     }
+    
+    private lazy var previewLayer = AVCaptureVideoPreviewLayer(session: mainVM.captureSession)
+    
+    private var drawings: [CAShapeLayer] = []
+    
+    
 
     // MARK: - VC
     override func viewDidLayoutSubviews() {
