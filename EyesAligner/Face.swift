@@ -5,7 +5,7 @@
 //  Created by iMamad on 08.05.22.
 //
 
-import Foundation
+import Vision
 
 struct Face {
     var faceRect: CGRect

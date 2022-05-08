@@ -25,6 +25,35 @@ class MainVM: NSObject {
         self.captureSession.startRunning()
     }
     
+    func handleLabel(face: Face, goldenArea: CGRect) {
+        let screenSize = UIScreen.main.bounds
+        let imageSize = CGSize(width: screenSize.width, height: screenSize.height)
+        
+        if let eye = face.leftEye {
+            let transformedPoint = getTransformedPoints(landmark: eye,
+                                                        faceRect: face.faceRect,
+                                                        imageSize: imageSize)
+            if goldenArea.contains(transformedPoint.first!) {
+                viewDelegate?.updateLabel(text: "Good ✅")
+            }else {
+                viewDelegate?.updateLabel(text: "Fail ❌")
+            }
+        }
+    }
+    
+    func getTransformedPoints(
+        landmark:VNFaceLandmarkRegion2D,
+        faceRect:CGRect,
+        imageSize:CGSize) -> [CGPoint]{
+            
+            // last point is 0.0
+            return landmark.normalizedPoints.map({ (np) -> CGPoint in
+                return CGPoint(
+                    x: faceRect.origin.x + np.x * faceRect.size.width,
+                    y: imageSize.height - (np.y * faceRect.size.height + faceRect.origin.y))
+            })
+        }
+    
     let captureSession = AVCaptureSession() //it's front camera within itself
     // 1- fill capture session from device
     private func addCameraInput() {
@@ -73,11 +102,11 @@ extension MainVM: AVCaptureVideoDataOutputSampleBufferDelegate {
         _ output: AVCaptureOutput,
         didOutput sampleBuffer: CMSampleBuffer,
         from connection: AVCaptureConnection) {
-        
-        guard let frame = CMSampleBufferGetImageBuffer(sampleBuffer) else {
-            debugPrint("unable to get image from sample buffer")
-            return
+            
+            guard let frame = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+                debugPrint("unable to get image from sample buffer")
+                return
+            }
+            self.detectFace(in: frame)
         }
-        self.detectFace(in: frame)
-    }
 }
