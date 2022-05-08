@@ -131,7 +131,10 @@ extension MainVC {
 extension MainVC: MainVMViewDelegate {
     func updateLabel(text: String) {
         DispatchQueue.main.async {
-            self.textLayer.string = text
+            if (self.textLayer.string as? String) != text {
+                self.textLayer.string = text
+                UINotificationFeedbackGenerator().notificationOccurred(.warning)
+            }
         }
     }
     
