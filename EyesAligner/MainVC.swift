@@ -63,10 +63,6 @@ class MainVC: UIViewController {
         self.view.layer.addSublayer(drawGoldenArea())
         self.view.layer.addSublayer(textLayer) // caLayer is and instance of parent CALayer
     }
-    
-    override func loadView() {
-        super.loadView()
-    }
 }
 
 
