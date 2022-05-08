@@ -74,21 +74,41 @@ extension MainVC {
 
 // MARK: - ViewDelegate
 extension MainVC: MainVMViewDelegate {
+    private func giveMeGoldenarea() -> CAShapeLayer {
+        // -- prepare golden area layer --
+        let screenBound = UIScreen.main.bounds
+        // make size
+        let goldenRectSize = CGSize(width: screenBound.width*0.8, height: screenBound.height*0.3)
+        // make origin
+        let goldenRectX = (screenBound.width - goldenRectSize.width) / 2
+        let goldenRectY = (screenBound.height - goldenRectSize.height) / 2
+        let goldenRectOrigin: CGPoint = CGPoint(x:  goldenRectX,y: goldenRectY)
+        
+        let goldenAreaLayer = CAShapeLayer()
+        goldenAreaLayer.path = UIBezierPath(rect: CGRect(origin: goldenRectOrigin, size: goldenRectSize)).cgPath
+        
+        goldenAreaLayer.fillColor = UIColor.clear.cgColor
+        goldenAreaLayer.strokeColor = UIColor.systemYellow.cgColor
+        goldenAreaLayer.lineWidth = 10
+        return goldenAreaLayer
+    }
     func handleFaceDetectionResults(_ observedFaces: [VNFaceObservation]) {
         
         self.clearDrawings()
         let facesBoundingBoxes: [CAShapeLayer] = observedFaces.flatMap({ (observedFace: VNFaceObservation) -> [CAShapeLayer] in
+            
+            // -- find face rect --
             let faceBoundingBoxOnScreen = self.previewLayer.layerRectConverted(fromMetadataOutputRect: observedFace.boundingBox)
-            let faceBoundingBoxPath = CGPath(rect: faceBoundingBoxOnScreen, transform: nil)
-            let faceBoundingBoxShape = CAShapeLayer()
-            faceBoundingBoxShape.path = faceBoundingBoxPath
-            faceBoundingBoxShape.fillColor = UIColor.clear.cgColor
-            faceBoundingBoxShape.strokeColor = UIColor.green.cgColor
             var newDrawings = [CAShapeLayer]()
-            newDrawings.append(faceBoundingBoxShape)
+            
+            // -- add face eyes to drawings --
             if let landmarks = observedFace.landmarks {
                 newDrawings = newDrawings + self.drawFaceFeatures(landmarks, screenBoundingBox: faceBoundingBoxOnScreen)
             }
+            
+            
+            newDrawings.append(giveMeGoldenarea())
+            
             return newDrawings
         })
         facesBoundingBoxes.forEach({ faceBoundingBox in self.view.layer.addSublayer(faceBoundingBox) })
