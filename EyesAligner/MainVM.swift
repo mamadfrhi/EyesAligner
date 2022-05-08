@@ -29,11 +29,15 @@ class MainVM: NSObject {
         let screenSize = UIScreen.main.bounds
         let imageSize = CGSize(width: screenSize.width, height: screenSize.height)
         
-        if let eye = face.leftEye {
-            let transformedPoint = getTransformedPoints(landmark: eye,
+        if let leftEye = face.leftEye, let rightEye = face.rightEye {
+            let leftEyePoint = getTransformedPoints(landmark: leftEye,
                                                         faceRect: face.faceRect,
                                                         imageSize: imageSize)
-            if goldenArea.contains(transformedPoint.first!) {
+            let rightEyePoint = getTransformedPoints(landmark: rightEye,
+                                                        faceRect: face.faceRect,
+                                                        imageSize: imageSize)
+            let isInGolderArea = goldenArea.contains(leftEyePoint.first!) && goldenArea.contains(rightEyePoint.last!)
+            if isInGolderArea {
                 viewDelegate?.updateLabel(text: "Good ✅")
             }else {
                 viewDelegate?.updateLabel(text: "Fail ❌")
