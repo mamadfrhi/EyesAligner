@@ -44,7 +44,7 @@ class MainVC: UIViewController {
         textLayer.frame = CGRect(x: 0, y: 80, width: screenBound.width, height: 18)
         textLayer.fontSize = 12
         textLayer.alignmentMode = .center
-        textLayer.string = "Please hold your beautiful eyes within the golden box! :D"
+        textLayer.string = "Please hold your beautiful 👀 within the golden box! :D"
         textLayer.isWrapped = true
         textLayer.truncationMode = .none
         textLayer.backgroundColor = UIColor.white.cgColor
@@ -67,17 +67,13 @@ class MainVC: UIViewController {
         super.viewDidLayoutSubviews()
         self.previewLayer.frame = self.view.frame
         self.view.layer.addSublayer(drawGoldenArea())
-        self.view.layer.addSublayer(textLayer) // caLayer is and instance of parent CALayer
+        self.view.layer.addSublayer(textLayer)
     }
     
     private func makeFace(from landmarks: VNFaceLandmarks2D, faceRect: CGRect) -> Face {
         var face = Face(faceRect: faceRect)
-        if let leftEye = landmarks.leftEye {
-            face.leftEye = leftEye
-        }
-        if let rightEye = landmarks.rightEye {
-            face.rightEye = rightEye
-        }
+        if let leftEye = landmarks.leftEye { face.leftEye = leftEye }
+        if let rightEye = landmarks.rightEye { face.rightEye = rightEye }
         return face
     }
 }
@@ -104,11 +100,11 @@ extension MainVC {
     private func drawEye(from eye: VNFaceLandmarkRegion2D, screenBoundingBox: CGRect) -> CAShapeLayer {
         let eyePath = CGMutablePath()
         let eyePathPoints = eye.normalizedPoints
-            .map({ eyePoint in
+            .map{ eyePoint in
                 CGPoint(
                     x: eyePoint.y * screenBoundingBox.height + screenBoundingBox.origin.x,
                     y: eyePoint.x * screenBoundingBox.width + screenBoundingBox.origin.y)
-            })
+            }
         eyePath.addLines(between: eyePathPoints)
         eyePath.closeSubpath()
         let eyeDrawing = CAShapeLayer()
@@ -134,7 +130,6 @@ extension MainVC {
 // MARK: - ViewDelegate
 extension MainVC: MainVMViewDelegate {
     func updateLabel(text: String) {
-        print(text)
         DispatchQueue.main.async {
             self.textLayer.string = text
         }
@@ -162,6 +157,6 @@ extension MainVC: MainVMViewDelegate {
     }
     
     func clearDrawings() {
-        self.drawings.forEach({ drawing in drawing.removeFromSuperlayer() })
+        self.drawings.forEach{ drawing in drawing.removeFromSuperlayer() }
     }
 }
