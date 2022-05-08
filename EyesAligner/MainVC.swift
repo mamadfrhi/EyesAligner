@@ -19,21 +19,22 @@ class MainVC: UIViewController {
     }
     
     // MARK: Properties
+    private let screenBound = UIScreen.main.bounds
     var mainVM: MainVM! {
         didSet {
             mainVM!.viewDelegate = self
         }
     }
     
-    var textLayer: CATextLayer = {
+    lazy var textLayer: CATextLayer = {
         let textLayer = CATextLayer()
         
-        textLayer.frame = CGRect(x: 20, y: 300, width: 200, height: 18)
+        textLayer.frame = CGRect(x: 0, y: 80, width: screenBound.width, height: 18)
         textLayer.fontSize = 12
         textLayer.alignmentMode = .center
-        textLayer.string = "Please hold you beautiful eyes within the golden box! :D"
+        textLayer.string = "Please hold your beautiful eyes within the golden box! :D"
         textLayer.isWrapped = true
-        textLayer.truncationMode = .end
+        textLayer.truncationMode = .none
         textLayer.backgroundColor = UIColor.white.cgColor
         textLayer.foregroundColor = UIColor.black.cgColor
         return textLayer
@@ -91,8 +92,6 @@ extension MainVC {
     }
     
     private func drawGoldenArea() -> CAShapeLayer {
-        // -- prepare golden area layer --
-        let screenBound = UIScreen.main.bounds
         // make size
         let goldenRectSize = CGSize(width: screenBound.width*0.8, height: screenBound.height*0.3)
         // make origin
