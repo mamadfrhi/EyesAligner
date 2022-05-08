@@ -19,10 +19,9 @@ class MainVM: NSObject {
     
     // MARK: Properties
     var viewDelegate: MainVMViewDelegate?
+    let captureSession = AVCaptureSession()
     
     private let videoDataOutput = AVCaptureVideoDataOutput()
-    
-    private let captureSession = AVCaptureSession()
     
     
     // MARK: Funcs

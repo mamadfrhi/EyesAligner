@@ -20,7 +20,7 @@ class MainVC: UIViewController {
     
     // MARK: Properties
     private let screenBound = UIScreen.main.bounds
-    var mainVM: MainVM! {
+    private var mainVM: MainVM! {
         didSet {
             mainVM!.viewDelegate = self
         }
@@ -38,7 +38,7 @@ class MainVC: UIViewController {
         return CGRect(origin: goldenRectOrigin, size: goldenRectSize)
     }
     
-    lazy var textLayer: CATextLayer = {
+    private lazy var textLayer: CATextLayer = {
         let textLayer = CATextLayer()
         
         textLayer.frame = CGRect(x: 0, y: 80, width: screenBound.width, height: 18)
