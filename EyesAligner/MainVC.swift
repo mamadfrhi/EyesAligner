@@ -119,26 +119,29 @@ extension MainVC: MainVMViewDelegate {
             self.textLayer.string = text
         }
     }
-    
-    func handleFaceDetectionResults(_ observedFaces: [VNFaceObservation]) {
+    private func makeFace(from landmarks: VNFaceLandmarks2D, faceRect: CGRect) -> Face {
+        var face = Face(faceRect: faceRect)
+        if let leftEye = landmarks.leftEye {
+            face.leftEye = leftEye
+        }
+        if let rightEye = landmarks.rightEye {
+            face.rightEye = rightEye
+        }
+        return face
+    }
+    private func makeDrawings(from observedFace: VNFaceObservation, faceRect: CGRect) -> [CAShapeLayer] {
+        return drawFaceFeatures(from: observedFace.landmarks!, screenBoundingBox: faceRect)
+    }
+    func handleFaceDetectionResults(_ observedFace: VNFaceObservation) {
         
         self.clearDrawings()
-        let facesBoundingBoxes: [CAShapeLayer] = observedFaces.flatMap({ (observedFace: VNFaceObservation) -> [CAShapeLayer] in
-            
-            // -- find face rect --
-            let faceBoundingBoxOnScreen = self.previewLayer.layerRectConverted(fromMetadataOutputRect: observedFace.boundingBox)
-            
-            // -- add face eyes to drawings --
-            var newDrawings = [CAShapeLayer]()
-            if let landmarks = observedFace.landmarks {
-                let faceFeatureDrawings = self.drawFaceFeatures(from: landmarks,
-                                                                screenBoundingBox: faceBoundingBoxOnScreen)
-                _ = faceFeatureDrawings.map { newDrawings.append($0) }
-            }
-            return newDrawings
-        })
-        facesBoundingBoxes.forEach({ faceBoundingBox in self.view.layer.addSublayer(faceBoundingBox) })
-        self.drawings = facesBoundingBoxes
+        let faceBoundingBoxOnScreen = self.previewLayer.layerRectConverted(fromMetadataOutputRect: observedFace.boundingBox)
+        if let landmarks = observedFace.landmarks {
+            face = makeFace(from: landmarks, faceRect: faceBoundingBoxOnScreen)
+            drawings = makeDrawings(from: observedFace, faceRect: faceBoundingBoxOnScreen)
+            drawings.forEach{self.view.layer.addSublayer($0) }
+            mainVM.handleLabel(face: face!, goldenArea: goldenAreaCGRect)
+        }
     }
     
     func configPreviewLayer() {

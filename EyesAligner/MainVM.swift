@@ -10,7 +10,7 @@ import AVFoundation
 import Vision
 
 protocol MainVMViewDelegate {
-    func handleFaceDetectionResults(_ observedFaces: [VNFaceObservation])
+    func handleFaceDetectionResults(_ observedFace: VNFaceObservation)
     func clearDrawings()
     func configPreviewLayer()
     func updateLabel(text: String)
