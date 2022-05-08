@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let mainVM = MainVM()
         window!.rootViewController = MainVC.`init`(mainVM: mainVM)
         mainVM.start()
-        
+        window!.makeKeyAndVisible()
         return true
     }
 }
