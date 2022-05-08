@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		877E5A4E2826F4EF00038085 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 877E5A4D2826F4EF00038085 /* AppDelegate.swift */; };
-		877E5A502826F4EF00038085 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 877E5A4F2826F4EF00038085 /* SceneDelegate.swift */; };
 		877E5A522826F4EF00038085 /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 877E5A512826F4EF00038085 /* MainVC.swift */; };
 		877E5A552826F4EF00038085 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 877E5A532826F4EF00038085 /* Main.storyboard */; };
 		877E5A572826F4F000038085 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 877E5A562826F4F000038085 /* Assets.xcassets */; };
@@ -19,7 +18,6 @@
 /* Begin PBXFileReference section */
 		877E5A4A2826F4EF00038085 /* EyesAligner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EyesAligner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		877E5A4D2826F4EF00038085 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		877E5A4F2826F4EF00038085 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		877E5A512826F4EF00038085 /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
 		877E5A542826F4EF00038085 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		877E5A562826F4F000038085 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -59,7 +57,6 @@
 			isa = PBXGroup;
 			children = (
 				877E5A4D2826F4EF00038085 /* AppDelegate.swift */,
-				877E5A4F2826F4EF00038085 /* SceneDelegate.swift */,
 				877E5A512826F4EF00038085 /* MainVC.swift */,
 				87B85F4B282794F500820FD6 /* MainVM.swift */,
 				877E5A532826F4EF00038085 /* Main.storyboard */,
@@ -143,7 +140,6 @@
 			files = (
 				877E5A522826F4EF00038085 /* MainVC.swift in Sources */,
 				877E5A4E2826F4EF00038085 /* AppDelegate.swift in Sources */,
-				877E5A502826F4EF00038085 /* SceneDelegate.swift in Sources */,
 				87B85F4C282794F500820FD6 /* MainVM.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
