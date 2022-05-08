@@ -57,7 +57,7 @@ class MainVC: UIViewController {
     private var drawings: [CAShapeLayer] = [] {
         didSet {
             DispatchQueue.main.async {
-                drawings.forEach{self.view.layer.addSublayer($0) }
+                self.drawings.forEach{self.view.layer.addSublayer($0) }
             }
         }
     }
