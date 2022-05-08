@@ -34,6 +34,11 @@ class MainVC: UIViewController {
         super.viewDidLayoutSubviews()
         self.previewLayer.frame = self.view.frame
     }
+    
+    override func loadView() {
+        super.loadView()
+        self.view.layer.addSublayer(drawGoldenArea())
+    }
 }
 
 
@@ -110,10 +115,6 @@ extension MainVC: MainVMViewDelegate {
                                                                 screenBoundingBox: faceBoundingBoxOnScreen)
                 _ = faceFeatureDrawings.map { newDrawings.append($0) }
             }
-            
-            // -- add face golden area to drawings --
-            newDrawings.append(drawGoldenArea())
-            
             return newDrawings
         })
         facesBoundingBoxes.forEach({ faceBoundingBox in self.view.layer.addSublayer(faceBoundingBox) })
@@ -128,5 +129,7 @@ extension MainVC: MainVMViewDelegate {
     
     func clearDrawings() {
         self.drawings.forEach({ drawing in drawing.removeFromSuperlayer() })
+        //prevent goldenArea to remove
+        self.view.layer.addSublayer(drawGoldenArea())
     }
 }
