@@ -69,6 +69,17 @@ class MainVC: UIViewController {
         self.view.layer.addSublayer(drawGoldenArea())
         self.view.layer.addSublayer(textLayer) // caLayer is and instance of parent CALayer
     }
+    
+    private func makeFace(from landmarks: VNFaceLandmarks2D, faceRect: CGRect) -> Face {
+        var face = Face(faceRect: faceRect)
+        if let leftEye = landmarks.leftEye {
+            face.leftEye = leftEye
+        }
+        if let rightEye = landmarks.rightEye {
+            face.rightEye = rightEye
+        }
+        return face
+    }
 }
 
 
@@ -127,16 +138,6 @@ extension MainVC: MainVMViewDelegate {
         DispatchQueue.main.async {
             self.textLayer.string = text
         }
-    }
-    private func makeFace(from landmarks: VNFaceLandmarks2D, faceRect: CGRect) -> Face {
-        var face = Face(faceRect: faceRect)
-        if let leftEye = landmarks.leftEye {
-            face.leftEye = leftEye
-        }
-        if let rightEye = landmarks.rightEye {
-            face.rightEye = rightEye
-        }
-        return face
     }
     
     func handleFaceDetectionResults(_ observedFace: VNFaceObservation) {
