@@ -25,6 +25,20 @@ class MainVC: UIViewController {
         }
     }
     
+    var textLayer: CATextLayer = {
+        let textLayer = CATextLayer()
+        
+        textLayer.frame = CGRect(x: 20, y: 300, width: 200, height: 18)
+        textLayer.fontSize = 12
+        textLayer.alignmentMode = .center
+        textLayer.string = "Please hold you beautiful eyes within the golden box! :D"
+        textLayer.isWrapped = true
+        textLayer.truncationMode = .end
+        textLayer.backgroundColor = UIColor.white.cgColor
+        textLayer.foregroundColor = UIColor.black.cgColor
+        return textLayer
+    }()
+    
     private lazy var previewLayer = AVCaptureVideoPreviewLayer(session: mainVM.captureSession)
     
     private var drawings: [CAShapeLayer] = []
@@ -33,11 +47,12 @@ class MainVC: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         self.previewLayer.frame = self.view.frame
+        self.view.layer.addSublayer(drawGoldenArea())
+        self.view.layer.addSublayer(textLayer) // caLayer is and instance of parent CALayer
     }
     
     override func loadView() {
         super.loadView()
-        self.view.layer.addSublayer(drawGoldenArea())
     }
 }
 
