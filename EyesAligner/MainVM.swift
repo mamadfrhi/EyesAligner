@@ -36,8 +36,8 @@ class MainVM: NSObject {
             let rightEyePoint = getTransformedPoints(landmark: rightEye,
                                                         faceRect: face.faceRect,
                                                         imageSize: imageSize)
-            let isInGolderArea = goldenArea.contains(leftEyePoint.first!) && goldenArea.contains(rightEyePoint.last!)
-            if isInGolderArea {
+            let isInGoldenArea = goldenArea.contains(leftEyePoint.first!) && goldenArea.contains(rightEyePoint.last!)
+            if isInGoldenArea {
                 viewDelegate?.updateLabel(text: "Good ✅")
             }else {
                 viewDelegate?.updateLabel(text: "Fail ❌")
