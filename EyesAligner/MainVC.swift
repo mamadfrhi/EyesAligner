@@ -31,9 +31,16 @@ extension MainVC: MainVMViewDelegate {
         self.drawings = facesBoundingBoxes
     }
     
+    func configPreviewLayer() {
+        self.previewLayer.videoGravity = .resizeAspectFill
+        self.view.layer.addSublayer(self.previewLayer)
+        self.previewLayer.frame = self.view.frame
+    }
+    
     func clearDrawings() {
         self.drawings.forEach({ drawing in drawing.removeFromSuperlayer() })
     }
+
 }
 class MainVC: UIViewController {
     
@@ -62,14 +69,6 @@ class MainVC: UIViewController {
     // MARK: - VC
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        self.previewLayer.frame = self.view.frame
-    }
-    
-    // MARK: - Config
-    // 2- fill previewLayer
-    func configPreviewLayer() {
-        self.previewLayer.videoGravity = .resizeAspectFill
-        self.view.layer.addSublayer(self.previewLayer)
         self.previewLayer.frame = self.view.frame
     }
 }
