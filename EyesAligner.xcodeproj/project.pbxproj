@@ -57,14 +57,30 @@
 			isa = PBXGroup;
 			children = (
 				877E5A4D2826F4EF00038085 /* AppDelegate.swift */,
+				87B85F4F282817AA00820FD6 /* Scenes */,
+				87B85F50282817CA00820FD6 /* Resources */,
+			);
+			path = EyesAligner;
+			sourceTree = "<group>";
+		};
+		87B85F4F282817AA00820FD6 /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				87B85F4D2827FFDF00820FD6 /* Face.swift */,
 				877E5A512826F4EF00038085 /* MainVC.swift */,
 				87B85F4B282794F500820FD6 /* MainVM.swift */,
+			);
+			path = Scenes;
+			sourceTree = "<group>";
+		};
+		87B85F50282817CA00820FD6 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
 				877E5A562826F4F000038085 /* Assets.xcassets */,
 				877E5A582826F4F000038085 /* LaunchScreen.storyboard */,
 				877E5A5B2826F4F000038085 /* Info.plist */,
-				87B85F4D2827FFDF00820FD6 /* Face.swift */,
 			);
-			path = EyesAligner;
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -281,7 +297,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5GB4GGS54M;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = EyesAligner/Info.plist;
+				INFOPLIST_FILE = EyesAligner/Resources/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -309,7 +325,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5GB4GGS54M;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = EyesAligner/Info.plist;
+				INFOPLIST_FILE = EyesAligner/Resources/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
