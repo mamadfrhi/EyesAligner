@@ -39,20 +39,20 @@ class MainVC: UIViewController {
 
 // MARK: - Drawings
 extension MainVC {
-    private func drawFaceFeatures(_ landmarks: VNFaceLandmarks2D, screenBoundingBox: CGRect) -> [CAShapeLayer] {
+    private func drawFaceFeatures(from landmarks: VNFaceLandmarks2D, screenBoundingBox: CGRect) -> [CAShapeLayer] {
         var faceFeaturesDrawings: [CAShapeLayer] = []
         if let leftEye = landmarks.leftEye {
-            let eyeDrawing = self.drawEye(leftEye, screenBoundingBox: screenBoundingBox)
+            let eyeDrawing = self.drawEye(from: leftEye, screenBoundingBox: screenBoundingBox)
             faceFeaturesDrawings.append(eyeDrawing)
         }
         if let rightEye = landmarks.rightEye {
-            let eyeDrawing = self.drawEye(rightEye, screenBoundingBox: screenBoundingBox)
+            let eyeDrawing = self.drawEye(from: rightEye, screenBoundingBox: screenBoundingBox)
             faceFeaturesDrawings.append(eyeDrawing)
         }
         // draw other face features here
         return faceFeaturesDrawings
     }
-    private func drawEye(_ eye: VNFaceLandmarkRegion2D, screenBoundingBox: CGRect) -> CAShapeLayer {
+    private func drawEye(from eye: VNFaceLandmarkRegion2D, screenBoundingBox: CGRect) -> CAShapeLayer {
         let eyePath = CGMutablePath()
         let eyePathPoints = eye.normalizedPoints
             .map({ eyePoint in
@@ -69,12 +69,8 @@ extension MainVC {
         
         return eyeDrawing
     }
-}
-
-
-// MARK: - ViewDelegate
-extension MainVC: MainVMViewDelegate {
-    private func giveMeGoldenarea() -> CAShapeLayer {
+    
+    private func drawGoldenArea() -> CAShapeLayer {
         // -- prepare golden area layer --
         let screenBound = UIScreen.main.bounds
         // make size
@@ -92,6 +88,13 @@ extension MainVC: MainVMViewDelegate {
         goldenAreaLayer.lineWidth = 10
         return goldenAreaLayer
     }
+}
+
+
+// MARK: - ViewDelegate
+extension MainVC: MainVMViewDelegate {
+    
+    
     func handleFaceDetectionResults(_ observedFaces: [VNFaceObservation]) {
         
         self.clearDrawings()
@@ -99,15 +102,17 @@ extension MainVC: MainVMViewDelegate {
             
             // -- find face rect --
             let faceBoundingBoxOnScreen = self.previewLayer.layerRectConverted(fromMetadataOutputRect: observedFace.boundingBox)
-            var newDrawings = [CAShapeLayer]()
             
             // -- add face eyes to drawings --
+            var newDrawings = [CAShapeLayer]()
             if let landmarks = observedFace.landmarks {
-                newDrawings = newDrawings + self.drawFaceFeatures(landmarks, screenBoundingBox: faceBoundingBoxOnScreen)
+                let faceFeatureDrawings = self.drawFaceFeatures(from: landmarks,
+                                                                screenBoundingBox: faceBoundingBoxOnScreen)
+                _ = faceFeatureDrawings.map { newDrawings.append($0) }
             }
             
-            
-            newDrawings.append(giveMeGoldenarea())
+            // -- add face golden area to drawings --
+            newDrawings.append(drawGoldenArea())
             
             return newDrawings
         })
