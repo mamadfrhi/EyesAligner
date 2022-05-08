@@ -26,6 +26,16 @@ class MainVC: UIViewController {
         }
     }
     
+    private var goldenAreaCGRect: CGRect {
+        // make size
+        let goldenRectSize = CGSize(width: screenBound.width*0.8, height: screenBound.height*0.3)
+        // make origin
+        let goldenRectX = (screenBound.width - goldenRectSize.width) / 2
+        let goldenRectY = (screenBound.height - goldenRectSize.height) / 2
+        let goldenRectOrigin: CGPoint = CGPoint(x:  goldenRectX,y: goldenRectY)
+        return CGRect(origin: goldenRectOrigin, size: goldenRectSize)
+    }
+    
     lazy var textLayer: CATextLayer = {
         let textLayer = CATextLayer()
         
@@ -92,15 +102,8 @@ extension MainVC {
     }
     
     private func drawGoldenArea() -> CAShapeLayer {
-        // make size
-        let goldenRectSize = CGSize(width: screenBound.width*0.8, height: screenBound.height*0.3)
-        // make origin
-        let goldenRectX = (screenBound.width - goldenRectSize.width) / 2
-        let goldenRectY = (screenBound.height - goldenRectSize.height) / 2
-        let goldenRectOrigin: CGPoint = CGPoint(x:  goldenRectX,y: goldenRectY)
-        
         let goldenAreaLayer = CAShapeLayer()
-        goldenAreaLayer.path = UIBezierPath(rect: CGRect(origin: goldenRectOrigin, size: goldenRectSize)).cgPath
+        goldenAreaLayer.path = UIBezierPath(rect: goldenAreaCGRect).cgPath
         
         goldenAreaLayer.fillColor = UIColor.clear.cgColor
         goldenAreaLayer.strokeColor = UIColor.systemYellow.cgColor
