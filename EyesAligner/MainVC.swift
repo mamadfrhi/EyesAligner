@@ -68,6 +68,9 @@ class MainVC: UIViewController {
 
 // MARK: - Drawings
 extension MainVC {
+    private func makeDrawings(from observedFace: VNFaceObservation, faceRect: CGRect) -> [CAShapeLayer] {
+        return drawFaceFeatures(from: observedFace.landmarks!, screenBoundingBox: faceRect)
+    }
     private func drawFaceFeatures(from landmarks: VNFaceLandmarks2D, screenBoundingBox: CGRect) -> [CAShapeLayer] {
         var faceFeaturesDrawings: [CAShapeLayer] = []
         if let leftEye = landmarks.leftEye {
@@ -129,9 +132,7 @@ extension MainVC: MainVMViewDelegate {
         }
         return face
     }
-    private func makeDrawings(from observedFace: VNFaceObservation, faceRect: CGRect) -> [CAShapeLayer] {
-        return drawFaceFeatures(from: observedFace.landmarks!, screenBoundingBox: faceRect)
-    }
+    
     func handleFaceDetectionResults(_ observedFace: VNFaceObservation) {
         
         let faceBoundingBoxOnScreen = self.previewLayer.layerRectConverted(fromMetadataOutputRect: observedFace.boundingBox)
