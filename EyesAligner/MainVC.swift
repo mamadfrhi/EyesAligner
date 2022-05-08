@@ -54,7 +54,13 @@ class MainVC: UIViewController {
     
     private lazy var previewLayer = AVCaptureVideoPreviewLayer(session: mainVM.captureSession)
     
-    private var drawings: [CAShapeLayer] = []
+    private var drawings: [CAShapeLayer] = [] {
+        didSet {
+            DispatchQueue.main.async {
+                drawings.forEach{self.view.layer.addSublayer($0) }
+            }
+        }
+    }
     
     // MARK: Functions
     override func viewDidLayoutSubviews() {
@@ -139,7 +145,7 @@ extension MainVC: MainVMViewDelegate {
         // manage drawings
         self.clearDrawings()
         drawings = makeDrawings(from: observedFace, faceRect: faceBoundingBoxOnScreen)
-        drawings.forEach{self.view.layer.addSublayer($0) }
+        
         
         // make face & handle label
         if let landmarks = observedFace.landmarks {
