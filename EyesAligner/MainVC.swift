@@ -26,6 +26,8 @@ class MainVC: UIViewController {
         }
     }
     
+    private var face: Face?
+    
     private var goldenAreaCGRect: CGRect {
         // make size
         let goldenRectSize = CGSize(width: screenBound.width*0.8, height: screenBound.height*0.3)
@@ -115,7 +117,12 @@ extension MainVC {
 
 // MARK: - ViewDelegate
 extension MainVC: MainVMViewDelegate {
-    
+    func updateLabel(text: String) {
+        print(text)
+        DispatchQueue.main.async {
+            self.textLayer.string = text
+        }
+    }
     
     func handleFaceDetectionResults(_ observedFaces: [VNFaceObservation]) {
         

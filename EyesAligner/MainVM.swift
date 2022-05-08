@@ -13,6 +13,7 @@ protocol MainVMViewDelegate {
     func handleFaceDetectionResults(_ observedFaces: [VNFaceObservation])
     func clearDrawings()
     func configPreviewLayer()
+    func updateLabel(text: String)
 }
 class MainVM: NSObject {
     var viewDelegate: MainVMViewDelegate?
