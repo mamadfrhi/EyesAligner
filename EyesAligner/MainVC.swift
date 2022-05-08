@@ -134,12 +134,15 @@ extension MainVC: MainVMViewDelegate {
     }
     func handleFaceDetectionResults(_ observedFace: VNFaceObservation) {
         
-        self.clearDrawings()
         let faceBoundingBoxOnScreen = self.previewLayer.layerRectConverted(fromMetadataOutputRect: observedFace.boundingBox)
+        // manage drawings
+        self.clearDrawings()
+        drawings = makeDrawings(from: observedFace, faceRect: faceBoundingBoxOnScreen)
+        drawings.forEach{self.view.layer.addSublayer($0) }
+        
+        // make face & handle label
         if let landmarks = observedFace.landmarks {
             face = makeFace(from: landmarks, faceRect: faceBoundingBoxOnScreen)
-            drawings = makeDrawings(from: observedFace, faceRect: faceBoundingBoxOnScreen)
-            drawings.forEach{self.view.layer.addSublayer($0) }
             mainVM.handleLabel(face: face!, goldenArea: goldenAreaCGRect)
         }
     }
