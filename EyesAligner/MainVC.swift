@@ -37,6 +37,14 @@ extension MainVC: MainVMViewDelegate {
 }
 class MainVC: UIViewController {
     
+    class func `init`(mainVM: MainVM) -> MainVC {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "MainVC") as! MainVC
+        // take care of force unwrapping above
+        vc.viewModel = mainVM
+        return vc
+    }
+    
     var viewModel: MainVM! {
         didSet {
             viewModel.viewDelegate = self
