@@ -33,8 +33,7 @@ class MainVM: NSObject {
     }
     
     func handleLabel(face: Face, goldenArea: CGRect) {
-        let screenSize = UIScreen.main.bounds
-        let imageSize = CGSize(width: screenSize.width, height: screenSize.height)
+        let imageSize = CGSize(width: screenBound.width, height: screenBound.height)
         
         if let leftEye = face.leftEye {
             let leftEyePoint = getTransformedPoints(landmark: leftEye,

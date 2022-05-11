@@ -19,7 +19,6 @@ class MainVC: UIViewController {
     }
     
     // MARK: Properties
-    private let screenBound = UIScreen.main.bounds
     private var mainVM: MainVM! {
         didSet {
             mainVM!.viewDelegate = self
