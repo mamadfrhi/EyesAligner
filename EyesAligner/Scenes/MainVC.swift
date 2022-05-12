@@ -20,9 +20,7 @@ class MainVC: UIViewController {
     
     // MARK: Properties
     private var mainVM: MainVM! {
-        didSet {
-            mainVM!.viewDelegate = self
-        }
+        didSet { mainVM!.viewDelegate = self }
     }
     
     private var face: Face?
@@ -64,9 +62,9 @@ class MainVC: UIViewController {
     // MARK: Functions
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        self.previewLayer.frame = self.view.frame
-        self.view.layer.addSublayer(drawGoldenArea())
-        self.view.layer.addSublayer(textLayer)
+        previewLayer.frame = view.frame
+        view.layer.addSublayer(drawGoldenArea())
+        view.layer.addSublayer(textLayer)
     }
     
     private func makeFace(from landmarks: VNFaceLandmarks2D, faceRect: CGRect) -> Face {
@@ -86,11 +84,11 @@ extension MainVC {
     private func drawFaceFeatures(from landmarks: VNFaceLandmarks2D, screenBoundingBox: CGRect) -> [CAShapeLayer] {
         var faceFeaturesDrawings: [CAShapeLayer] = []
         if let leftEye = landmarks.leftEye {
-            let eyeDrawing = self.drawEye(from: leftEye, screenBoundingBox: screenBoundingBox)
+            let eyeDrawing = drawEye(from: leftEye, screenBoundingBox: screenBoundingBox)
             faceFeaturesDrawings.append(eyeDrawing)
         }
         if let rightEye = landmarks.rightEye {
-            let eyeDrawing = self.drawEye(from: rightEye, screenBoundingBox: screenBoundingBox)
+            let eyeDrawing = drawEye(from: rightEye, screenBoundingBox: screenBoundingBox)
             faceFeaturesDrawings.append(eyeDrawing)
         }
         // draw other face features here
@@ -109,7 +107,7 @@ extension MainVC {
         let eyeDrawing = CAShapeLayer()
         eyeDrawing.path = eyePath
         eyeDrawing.fillColor = UIColor.clear.cgColor
-        eyeDrawing.strokeColor = UIColor.green.cgColor
+        eyeDrawing.strokeColor = UIColor.white.cgColor
         
         return eyeDrawing
     }
@@ -139,9 +137,9 @@ extension MainVC: MainVMViewDelegate {
     
     func handleFaceDetectionResults(_ observedFace: VNFaceObservation) {
         
-        let faceBoundingBoxOnScreen = self.previewLayer.layerRectConverted(fromMetadataOutputRect: observedFace.boundingBox)
+        let faceBoundingBoxOnScreen = previewLayer.layerRectConverted(fromMetadataOutputRect: observedFace.boundingBox)
         // manage drawings
-        self.clearDrawings()
+        clearDrawings()
         drawings = makeDrawings(from: observedFace, faceRect: faceBoundingBoxOnScreen)
         
         
@@ -153,12 +151,12 @@ extension MainVC: MainVMViewDelegate {
     }
     
     func configPreviewLayer() {
-        self.previewLayer.videoGravity = .resizeAspectFill
-        self.view.layer.addSublayer(self.previewLayer)
-        self.previewLayer.frame = self.view.frame
+        previewLayer.videoGravity = .resizeAspectFill
+        view.layer.addSublayer(previewLayer)
+        previewLayer.frame = view.frame
     }
     
     func clearDrawings() {
-        self.drawings.forEach{ drawing in drawing.removeFromSuperlayer() }
+        drawings.forEach{ drawing in drawing.removeFromSuperlayer() }
     }
 }
