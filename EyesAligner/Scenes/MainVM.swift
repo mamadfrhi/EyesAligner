@@ -19,17 +19,17 @@ class MainVM: NSObject {
     
     // MARK: Properties
     var viewDelegate: MainVMViewDelegate?
-    let captureSession = AVCaptureSession()
+    let captureSession = AVCaptureSession() // input
     
-    private let videoDataOutput = AVCaptureVideoDataOutput()
+    private let videoDataOutput = AVCaptureVideoDataOutput() // output
     
     
     // MARK: Funcs
     func start() {
-        self.addCameraInput()
+        addCameraInput()
         viewDelegate!.configPreviewLayer()
-        self.getCameraFrames()
-        self.captureSession.startRunning()
+        getCameraFrames()
+        captureSession.startRunning()
     }
     
     func handleLabel(face: Face, goldenArea: CGRect) {
@@ -62,7 +62,7 @@ class MainVM: NSObject {
         }
     
     
-    
+    // config input
     private func addCameraInput() {
         guard let device = AVCaptureDevice.DiscoverySession(
             deviceTypes: [.builtInWideAngleCamera, .builtInDualCamera, .builtInTrueDepthCamera],
@@ -74,6 +74,7 @@ class MainVM: NSObject {
         self.captureSession.addInput(cameraInput)
     }
     
+    // config output
     private func getCameraFrames() {
         self.videoDataOutput.videoSettings = [(kCVPixelBufferPixelFormatTypeKey as NSString) : NSNumber(value: kCVPixelFormatType_32BGRA)] as [String : Any]
         self.videoDataOutput.alwaysDiscardsLateVideoFrames = true
