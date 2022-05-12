@@ -33,34 +33,17 @@ class MainVM: NSObject {
     }
     
     func handleLabel(face: Face, goldenArea: CGRect) {
-        let imageSize = CGSize(width: screenBound.width, height: screenBound.height)
         
-        if let leftEye = face.leftEye {
-            let leftEyePoint = getTransformedPoints(landmark: leftEye,
-                                                    faceRect: face.faceRect,
-                                                    imageSize: imageSize)
-            
-            let leftEyeIsInGoldArea = goldenArea.contains(leftEyePoint.first!)
-            
-            if leftEyeIsInGoldArea {
-                viewDelegate?.updateLabel(text: "Good ✅")
-            }else {
-                viewDelegate?.updateLabel(text: "Fail ❌")
-            }
+        let leftEyePoint = face.leftEyeCGPoints
+        
+        let leftEyeIsInGoldArea = goldenArea.contains(leftEyePoint.first!)
+        
+        if leftEyeIsInGoldArea {
+            viewDelegate?.updateLabel(text: "Good ✅")
+        }else {
+            viewDelegate?.updateLabel(text: "Fail ❌")
         }
     }
-    
-    private func getTransformedPoints(
-        landmark:VNFaceLandmarkRegion2D,
-        faceRect:CGRect,
-        imageSize:CGSize) -> [CGPoint]{
-            return landmark.normalizedPoints.map{ (np) -> CGPoint in
-                return CGPoint(
-                    x: faceRect.origin.x + np.x * faceRect.size.width,
-                    y: imageSize.height - (np.y * faceRect.size.height + faceRect.origin.y))
-            }
-        }
-    
     
     // config input
     private func addCameraInput() {

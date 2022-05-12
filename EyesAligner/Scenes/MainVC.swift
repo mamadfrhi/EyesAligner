@@ -68,7 +68,8 @@ class MainVC: UIViewController {
     }
     
     private func makeFace(from landmarks: VNFaceLandmarks2D, faceRect: CGRect) -> Face {
-        var face = Face(faceRect: faceRect)
+        //TODO: force unwrapp is bad
+        var face = Face(faceRect: faceRect, leftEye: landmarks.leftEye!, rightEye: landmarks.rightEye!)
         if let leftEye = landmarks.leftEye { face.leftEye = leftEye }
         if let rightEye = landmarks.rightEye { face.rightEye = rightEye }
         return face
