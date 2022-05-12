@@ -84,26 +84,21 @@ extension MainVC {
     }
     private func drawFaceFeatures(from landmarks: VNFaceLandmarks2D, faceBoundingBox: CGRect) -> [CAShapeLayer] {
         var faceFeaturesDrawings: [CAShapeLayer] = []
-        if let leftEye = landmarks.leftEye {
-            let eyeDrawing = drawEye(from: leftEye, faceBoundingBox: faceBoundingBox)
+        if let leftEyeCGPoints = face?.leftEyeCGPoints {
+            let eyeDrawing = drawEye(points: leftEyeCGPoints)
             faceFeaturesDrawings.append(eyeDrawing)
         }
-        if let rightEye = landmarks.rightEye {
-            let eyeDrawing = drawEye(from: rightEye, faceBoundingBox: faceBoundingBox)
+        if let rightEyeCGPoints = face?.rightEyeCGPoints {
+            let eyeDrawing = drawEye(points: rightEyeCGPoints)
             faceFeaturesDrawings.append(eyeDrawing)
         }
         // draw other face features here
         return faceFeaturesDrawings
     }
-    private func drawEye(from eye: VNFaceLandmarkRegion2D, faceBoundingBox: CGRect) -> CAShapeLayer {
+    private func drawEye(points: [CGPoint]) -> CAShapeLayer {
         let eyePath = CGMutablePath()
-        let eyePathPoints = eye.normalizedPoints
-            .map{ eyePoint in
-                CGPoint(
-                    x: eyePoint.y * faceBoundingBox.height + faceBoundingBox.origin.x,
-                    y: eyePoint.x * faceBoundingBox.width + faceBoundingBox.origin.y)
-            }
-        eyePath.addLines(between: eyePathPoints)
+        
+        eyePath.addLines(between: points)
         eyePath.closeSubpath()
         let eyeDrawing = CAShapeLayer()
         eyeDrawing.path = eyePath
