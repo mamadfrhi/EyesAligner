@@ -28,4 +28,14 @@ struct Face {
             }
         return eyePathPoints
     }
+    
+    var rightEyeCGPoints: [CGPoint] {
+        let eyePathPoints = rightEye.normalizedPoints
+            .map{ eyePoint in
+                CGPoint(
+                    x: eyePoint.y * faceRect.height + faceRect.origin.x,
+                    y: eyePoint.x * faceRect.width + faceRect.origin.y)
+            }
+        return eyePathPoints
+    }
 }
