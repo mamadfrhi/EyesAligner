@@ -79,10 +79,10 @@ class MainVC: UIViewController {
 
 // MARK: - Drawings
 extension MainVC {
-    private func makeDrawings(from observedFace: VNFaceObservation, faceRect: CGRect) -> [CAShapeLayer] {
-        return drawFaceFeatures(from: observedFace.landmarks!, faceBoundingBox: faceRect)
+    private func makeDrawings(from observedFace: VNFaceObservation) -> [CAShapeLayer] {
+        return drawFaceFeatures(from: observedFace.landmarks!)
     }
-    private func drawFaceFeatures(from landmarks: VNFaceLandmarks2D, faceBoundingBox: CGRect) -> [CAShapeLayer] {
+    private func drawFaceFeatures(from landmarks: VNFaceLandmarks2D) -> [CAShapeLayer] {
         var faceFeaturesDrawings: [CAShapeLayer] = []
         if let leftEyeCGPoints = face?.leftEyeCGPoints {
             let eyeDrawing = drawEye(points: leftEyeCGPoints)
@@ -136,7 +136,7 @@ extension MainVC: MainVMViewDelegate {
         let faceBoundingBoxOnScreen = previewLayer.layerRectConverted(fromMetadataOutputRect: observedFace.boundingBox)
         // manage drawings
         clearDrawings()
-        drawings = makeDrawings(from: observedFace, faceRect: faceBoundingBoxOnScreen)
+        drawings = makeDrawings(from: observedFace)
         
         
         // make face & handle label
