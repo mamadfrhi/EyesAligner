@@ -79,28 +79,28 @@ class MainVC: UIViewController {
 // MARK: - Drawings
 extension MainVC {
     private func makeDrawings(from observedFace: VNFaceObservation, faceRect: CGRect) -> [CAShapeLayer] {
-        return drawFaceFeatures(from: observedFace.landmarks!, screenBoundingBox: faceRect)
+        return drawFaceFeatures(from: observedFace.landmarks!, faceBoundingBox: faceRect)
     }
-    private func drawFaceFeatures(from landmarks: VNFaceLandmarks2D, screenBoundingBox: CGRect) -> [CAShapeLayer] {
+    private func drawFaceFeatures(from landmarks: VNFaceLandmarks2D, faceBoundingBox: CGRect) -> [CAShapeLayer] {
         var faceFeaturesDrawings: [CAShapeLayer] = []
         if let leftEye = landmarks.leftEye {
-            let eyeDrawing = drawEye(from: leftEye, screenBoundingBox: screenBoundingBox)
+            let eyeDrawing = drawEye(from: leftEye, faceBoundingBox: faceBoundingBox)
             faceFeaturesDrawings.append(eyeDrawing)
         }
         if let rightEye = landmarks.rightEye {
-            let eyeDrawing = drawEye(from: rightEye, screenBoundingBox: screenBoundingBox)
+            let eyeDrawing = drawEye(from: rightEye, faceBoundingBox: faceBoundingBox)
             faceFeaturesDrawings.append(eyeDrawing)
         }
         // draw other face features here
         return faceFeaturesDrawings
     }
-    private func drawEye(from eye: VNFaceLandmarkRegion2D, screenBoundingBox: CGRect) -> CAShapeLayer {
+    private func drawEye(from eye: VNFaceLandmarkRegion2D, faceBoundingBox: CGRect) -> CAShapeLayer {
         let eyePath = CGMutablePath()
         let eyePathPoints = eye.normalizedPoints
             .map{ eyePoint in
                 CGPoint(
-                    x: eyePoint.y * screenBoundingBox.height + screenBoundingBox.origin.x,
-                    y: eyePoint.x * screenBoundingBox.width + screenBoundingBox.origin.y)
+                    x: eyePoint.y * faceBoundingBox.height + faceBoundingBox.origin.x,
+                    y: eyePoint.x * faceBoundingBox.width + faceBoundingBox.origin.y)
             }
         eyePath.addLines(between: eyePathPoints)
         eyePath.closeSubpath()
