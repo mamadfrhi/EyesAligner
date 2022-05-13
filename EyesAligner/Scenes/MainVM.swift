@@ -10,7 +10,7 @@ import AVFoundation
 import Vision
 
 protocol MainVMViewDelegate {
-    func handleFaceDetectionResults(_ observedFace: VNFaceObservation)
+    func handleFaceDetectionResults(_ observedFace: Face)
     func clearDrawings()
     func configPreviewLayer()
     func updateLabel(text: String)
@@ -19,50 +19,35 @@ class MainVM: NSObject {
     
     // MARK: Properties
     var viewDelegate: MainVMViewDelegate?
-    let captureSession = AVCaptureSession()
+    let captureSession = AVCaptureSession() // input
     
-    private let videoDataOutput = AVCaptureVideoDataOutput()
+    private let videoDataOutput = AVCaptureVideoDataOutput() // output
     
     
     // MARK: Funcs
     func start() {
-        self.addCameraInput()
+        addCameraInput()
         viewDelegate!.configPreviewLayer()
-        self.getCameraFrames()
-        self.captureSession.startRunning()
+        getCameraFrames()
+        captureSession.startRunning()
     }
     
     func handleLabel(face: Face, goldenArea: CGRect) {
-        let imageSize = CGSize(width: screenBound.width, height: screenBound.height)
+        //TODO: run for loop on eyes Tuple to be DRY
+        let leftEyePoint = face.eyes.leftEye.makeCGPoints(in: face.faceRectOnScreen!)
+        let rightEyePoint = face.eyes.rightEye.makeCGPoints(in: face.faceRectOnScreen!)
         
-        if let leftEye = face.leftEye {
-            let leftEyePoint = getTransformedPoints(landmark: leftEye,
-                                                    faceRect: face.faceRect,
-                                                    imageSize: imageSize)
-            
-            let leftEyeIsInGoldArea = goldenArea.contains(leftEyePoint.first!)
-            
-            if leftEyeIsInGoldArea {
-                viewDelegate?.updateLabel(text: "Good ✅")
-            }else {
-                viewDelegate?.updateLabel(text: "Fail ❌")
-            }
+        let leftEyeIsInGoldArea = goldenArea.contains(leftEyePoint.first!)
+        let rightEyeIsInGoldArea = goldenArea.contains(rightEyePoint.first!)
+        
+        if leftEyeIsInGoldArea && rightEyeIsInGoldArea {
+            viewDelegate?.updateLabel(text: "Good ✅")
+        }else {
+            viewDelegate?.updateLabel(text: "Fail ❌")
         }
     }
     
-    private func getTransformedPoints(
-        landmark:VNFaceLandmarkRegion2D,
-        faceRect:CGRect,
-        imageSize:CGSize) -> [CGPoint]{
-            return landmark.normalizedPoints.map{ (np) -> CGPoint in
-                return CGPoint(
-                    x: faceRect.origin.x + np.x * faceRect.size.width,
-                    y: imageSize.height - (np.y * faceRect.size.height + faceRect.origin.y))
-            }
-        }
-    
-    
-    
+    // config input
     private func addCameraInput() {
         guard let device = AVCaptureDevice.DiscoverySession(
             deviceTypes: [.builtInWideAngleCamera, .builtInDualCamera, .builtInTrueDepthCamera],
@@ -74,22 +59,31 @@ class MainVM: NSObject {
         self.captureSession.addInput(cameraInput)
     }
     
+    // config output
     private func getCameraFrames() {
-        self.videoDataOutput.videoSettings = [(kCVPixelBufferPixelFormatTypeKey as NSString) : NSNumber(value: kCVPixelFormatType_32BGRA)] as [String : Any]
-        self.videoDataOutput.alwaysDiscardsLateVideoFrames = true
-        self.videoDataOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "camera_frame_processing_queue"))
-        self.captureSession.addOutput(self.videoDataOutput)
-        guard let connection = self.videoDataOutput.connection(with: AVMediaType.video),
+        videoDataOutput.videoSettings = [(kCVPixelBufferPixelFormatTypeKey as NSString) : NSNumber(value: kCVPixelFormatType_32BGRA)] as [String : Any]
+        videoDataOutput.alwaysDiscardsLateVideoFrames = true
+        videoDataOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "camera_frame_processing_queue"))
+        captureSession.addOutput(videoDataOutput)
+        guard let connection = videoDataOutput.connection(with: AVMediaType.video),
               connection.isVideoOrientationSupported else { return }
         connection.videoOrientation = .portrait
     }
     
     private func detectFace(in image: CVPixelBuffer) {
         let faceDetectionRequest = VNDetectFaceLandmarksRequest(completionHandler: { (request: VNRequest, error: Error?) in
-            if let faces = request.results as? [VNFaceObservation], let firstFace = faces.first {
-                self.viewDelegate?.handleFaceDetectionResults(firstFace)
-            } else {
-                self.viewDelegate?.clearDrawings()
+            if let faces = request.results as? [VNFaceObservation],
+               let firstFace = faces.first {
+                
+                if let leftEye = firstFace.landmarks?.leftEye,
+                   let rightEye = firstFace.landmarks?.rightEye {
+                    let face = Face(faceRectOnVision: firstFace.boundingBox,
+                                    leftEye: leftEye,
+                                    rightEye: rightEye)
+                    self.viewDelegate?.handleFaceDetectionResults(face)
+                } else {
+                    self.viewDelegate?.clearDrawings()
+                }
             }
         })
         let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: image, orientation: .leftMirrored, options: [:])
@@ -107,6 +101,6 @@ extension MainVM: AVCaptureVideoDataOutputSampleBufferDelegate {
                 debugPrint("unable to get image from sample buffer")
                 return
             }
-            self.detectFace(in: frame)
+            detectFace(in: frame)
         }
 }
