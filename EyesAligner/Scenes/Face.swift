@@ -9,33 +9,29 @@ import Vision
 
 struct Face {
     
-    var faceRect: CGRect
-    var leftEye: VNFaceLandmarkRegion2D
-    var rightEye: VNFaceLandmarkRegion2D
+    let faceRectOnVision: CGRect
+    let eyes: (leftEye: Eye, rightEye: Eye)
+    var faceRectOnScreen: CGRect?
     
-    init(faceRect: CGRect, leftEye: VNFaceLandmarkRegion2D, rightEye: VNFaceLandmarkRegion2D) {
-        self.faceRect = faceRect
-        self.leftEye = leftEye
-        self.rightEye = rightEye
+    init(faceRectOnVision: CGRect, leftEye: VNFaceLandmarkRegion2D, rightEye: VNFaceLandmarkRegion2D) {
+        self.faceRectOnVision = faceRectOnVision
+        self.eyes.leftEye = Eye(landMark: leftEye)
+        self.eyes.rightEye = Eye(landMark: rightEye)
+    }
+}
+
+struct Eye {
+    let landMark: VNFaceLandmarkRegion2D
+    init(landMark: VNFaceLandmarkRegion2D) {
+        self.landMark = landMark
     }
     
-    var leftEyeCGPoints: [CGPoint] {
-        let eyePathPoints = leftEye.normalizedPoints
+    func makeCGPoints(in faceRectOnScreen: CGRect) -> [CGPoint] {
+        landMark.normalizedPoints
             .map{ eyePoint in
                 CGPoint(
-                    x: eyePoint.y * faceRect.height + faceRect.origin.x,
-                    y: eyePoint.x * faceRect.width + faceRect.origin.y)
+                    x: eyePoint.y * faceRectOnScreen.height + faceRectOnScreen.origin.x,
+                    y: eyePoint.x * faceRectOnScreen.width + faceRectOnScreen.origin.y)
             }
-        return eyePathPoints
-    }
-    
-    var rightEyeCGPoints: [CGPoint] {
-        let eyePathPoints = rightEye.normalizedPoints
-            .map{ eyePoint in
-                CGPoint(
-                    x: eyePoint.y * faceRect.height + faceRect.origin.x,
-                    y: eyePoint.x * faceRect.width + faceRect.origin.y)
-            }
-        return eyePathPoints
     }
 }

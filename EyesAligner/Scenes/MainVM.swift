@@ -10,7 +10,7 @@ import AVFoundation
 import Vision
 
 protocol MainVMViewDelegate {
-    func handleFaceDetectionResults(_ observedFace: VNFaceObservation)
+    func handleFaceDetectionResults(_ observedFace: Face)
     func clearDrawings()
     func configPreviewLayer()
     func updateLabel(text: String)
@@ -33,12 +33,14 @@ class MainVM: NSObject {
     }
     
     func handleLabel(face: Face, goldenArea: CGRect) {
-        
-        let leftEyePoint = face.leftEyeCGPoints
+        //TODO: run for loop on eyes Tuple to be DRY
+        let leftEyePoint = face.eyes.leftEye.makeCGPoints(in: face.faceRectOnScreen!)
+        let rightEyePoint = face.eyes.rightEye.makeCGPoints(in: face.faceRectOnScreen!)
         
         let leftEyeIsInGoldArea = goldenArea.contains(leftEyePoint.first!)
+        let rightEyeIsInGoldArea = goldenArea.contains(rightEyePoint.first!)
         
-        if leftEyeIsInGoldArea {
+        if leftEyeIsInGoldArea && rightEyeIsInGoldArea {
             viewDelegate?.updateLabel(text: "Good ✅")
         }else {
             viewDelegate?.updateLabel(text: "Fail ❌")
@@ -70,10 +72,18 @@ class MainVM: NSObject {
     
     private func detectFace(in image: CVPixelBuffer) {
         let faceDetectionRequest = VNDetectFaceLandmarksRequest(completionHandler: { (request: VNRequest, error: Error?) in
-            if let faces = request.results as? [VNFaceObservation], let firstFace = faces.first {
-                self.viewDelegate?.handleFaceDetectionResults(firstFace)
-            } else {
-                self.viewDelegate?.clearDrawings()
+            if let faces = request.results as? [VNFaceObservation],
+               let firstFace = faces.first {
+                
+                if let leftEye = firstFace.landmarks?.leftEye,
+                   let rightEye = firstFace.landmarks?.rightEye {
+                    let face = Face(faceRectOnVision: firstFace.boundingBox,
+                                    leftEye: leftEye,
+                                    rightEye: rightEye)
+                    self.viewDelegate?.handleFaceDetectionResults(face)
+                } else {
+                    self.viewDelegate?.clearDrawings()
+                }
             }
         })
         let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: image, orientation: .leftMirrored, options: [:])

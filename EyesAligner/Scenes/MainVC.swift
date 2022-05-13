@@ -79,20 +79,24 @@ class MainVC: UIViewController {
 
 // MARK: - Drawings
 extension MainVC {
-    private func makeDrawings(from observedFace: VNFaceObservation) -> [CAShapeLayer] {
-        return drawFaceFeatures(from: observedFace.landmarks!)
+    private func makeDrawings(from observedFace: Face) -> [CAShapeLayer] {
+        drawFaceFeatures(from: observedFace)
     }
-    private func drawFaceFeatures(from landmarks: VNFaceLandmarks2D) -> [CAShapeLayer] {
+    private func drawFaceFeatures(from face: Face) -> [CAShapeLayer] {
         var faceFeaturesDrawings: [CAShapeLayer] = []
-        if let leftEyeCGPoints = face?.leftEyeCGPoints {
-            let eyeDrawing = drawEye(points: leftEyeCGPoints)
-            faceFeaturesDrawings.append(eyeDrawing)
+        
+        // TODO: run a for loop on eyes tuple to be DRY
+        if let faceRectOnScreen = face.faceRectOnScreen {
+            // left eye
+            let leftEyeCGPoints = face.eyes.leftEye.makeCGPoints(in: faceRectOnScreen)
+            let leftEyeCAShape = drawEye(points: leftEyeCGPoints)
+            faceFeaturesDrawings.append(leftEyeCAShape)
+            // right eye
+            let rightEyeCGPoints = face.eyes.rightEye.makeCGPoints(in: faceRectOnScreen)
+            let rightEyeCAShape = drawEye(points: rightEyeCGPoints)
+            faceFeaturesDrawings.append(rightEyeCAShape)
         }
-        if let rightEyeCGPoints = face?.rightEyeCGPoints {
-            let eyeDrawing = drawEye(points: rightEyeCGPoints)
-            faceFeaturesDrawings.append(eyeDrawing)
-        }
-        // draw other face features here
+        
         return faceFeaturesDrawings
     }
     private func drawEye(points: [CGPoint]) -> CAShapeLayer {
@@ -131,19 +135,15 @@ extension MainVC: MainVMViewDelegate {
         }
     }
     
-    func handleFaceDetectionResults(_ observedFace: VNFaceObservation) {
-        
-        let faceBoundingBoxOnScreen = previewLayer.layerRectConverted(fromMetadataOutputRect: observedFace.boundingBox)
+    func handleFaceDetectionResults(_ observedFace: Face) {
+        var observedFace = observedFace
+        observedFace.faceRectOnScreen = previewLayer.layerRectConverted(fromMetadataOutputRect: observedFace.faceRectOnVision)
         // manage drawings
         clearDrawings()
         drawings = makeDrawings(from: observedFace)
         
-        
         // make face & handle label
-        if let landmarks = observedFace.landmarks {
-            face = makeFace(from: landmarks, faceRect: faceBoundingBoxOnScreen)
-            mainVM.handleLabel(face: face!, goldenArea: goldenAreaCGRect)
-        }
+        mainVM.handleLabel(face: observedFace, goldenArea: goldenAreaCGRect)
     }
     
     func configPreviewLayer() {
