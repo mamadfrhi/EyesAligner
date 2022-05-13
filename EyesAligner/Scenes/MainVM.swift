@@ -56,7 +56,7 @@ class MainVM: NSObject {
             fatalError("No back camera device found, please make sure to run SimpleLaneDetection in an iOS device and not a simulator")
         }
         let cameraInput = try! AVCaptureDeviceInput(device: device)
-        self.captureSession.addInput(cameraInput)
+        captureSession.addInput(cameraInput)
     }
     
     // config output
