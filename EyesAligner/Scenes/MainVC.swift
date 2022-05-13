@@ -91,9 +91,9 @@ extension MainVC {
     }
     private func drawEye(points: [CGPoint]) -> CAShapeLayer {
         let eyePath = CGMutablePath()
-        
         eyePath.addLines(between: points)
         eyePath.closeSubpath()
+        
         let eyeDrawing = CAShapeLayer()
         eyeDrawing.path = eyePath
         eyeDrawing.fillColor = UIColor.clear.cgColor
