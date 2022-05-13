@@ -22,9 +22,7 @@ struct Face {
 
 struct Eye {
     let landMark: VNFaceLandmarkRegion2D
-    init(landMark: VNFaceLandmarkRegion2D) {
-        self.landMark = landMark
-    }
+    init(landMark: VNFaceLandmarkRegion2D) { self.landMark = landMark }
     
     func makeCGPoints(in faceRectOnScreen: CGRect) -> [CGPoint] {
         landMark.normalizedPoints
