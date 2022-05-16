@@ -10,8 +10,8 @@ import Vision
 struct Face {
     
     let faceRectOnVision: CGRect
-    let eyes: (leftEye: Eye, rightEye: Eye)
     var faceRectOnScreen: CGRect?
+    let eyes: (leftEye: Eye, rightEye: Eye)
     
     init(faceRectOnVision: CGRect, leftEye: VNFaceLandmarkRegion2D, rightEye: VNFaceLandmarkRegion2D) {
         self.faceRectOnVision = faceRectOnVision
