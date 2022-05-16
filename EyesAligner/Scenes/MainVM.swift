@@ -27,23 +27,28 @@ class MainVM: NSObject {
     // MARK: Funcs
     func start() {
         addCameraInput()
-        viewDelegate!.configPreviewLayer()
+        viewDelegate?.configPreviewLayer()
         getCameraFrames()
         captureSession.startRunning()
     }
     
     func handleLabel(face: Face, goldenArea: CGRect) {
         //TODO: run for loop on eyes Tuple to be DRY
-        let leftEyePoint = face.eyes.leftEye.makeCGPoints(in: face.faceRectOnScreen!)
-        let rightEyePoint = face.eyes.rightEye.makeCGPoints(in: face.faceRectOnScreen!)
+        let eyes = face.eyes
+        let leftEyePoint = eyes.leftEye.makeCGPoints(in: face.faceRectOnScreen!)
+        let rightEyePoint = eyes.rightEye.makeCGPoints(in: face.faceRectOnScreen!)
         
-        let leftEyeIsInGoldArea = goldenArea.contains(leftEyePoint.first!)
-        let rightEyeIsInGoldArea = goldenArea.contains(rightEyePoint.first!)
-        
-        if leftEyeIsInGoldArea && rightEyeIsInGoldArea {
-            viewDelegate?.updateLabel(text: "Good ✅")
-        }else {
-            viewDelegate?.updateLabel(text: "Fail ❌")
+        if let leftEyePoint = leftEyePoint.first,
+           let rightEyePoint = rightEyePoint.first {
+            
+            let leftEyeIsInGoldArea = goldenArea.contains(leftEyePoint)
+            let rightEyeIsInGoldArea = goldenArea.contains(rightEyePoint)
+            
+            if leftEyeIsInGoldArea && rightEyeIsInGoldArea {
+                viewDelegate?.updateLabel(text: "Good ✅")
+            }else {
+                viewDelegate?.updateLabel(text: "Fail ❌")
+            }
         }
     }
     
@@ -71,7 +76,9 @@ class MainVM: NSObject {
     }
     
     private func detectFace(in image: CVPixelBuffer) {
-        let faceDetectionRequest = VNDetectFaceLandmarksRequest(completionHandler: { (request: VNRequest, error: Error?) in
+        let faceDetectionRequest = VNDetectFaceLandmarksRequest(completionHandler: {
+            (request: VNRequest, error: Error?) in
+            
             if let faces = request.results as? [VNFaceObservation],
                let firstFace = faces.first {
                 
@@ -86,7 +93,7 @@ class MainVM: NSObject {
                 }
             }
         })
-        let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: image, orientation: .leftMirrored, options: [:])
+        let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: image, orientation: .leftMirrored)
         try? imageRequestHandler.perform([faceDetectionRequest])
     }
 }

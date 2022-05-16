@@ -25,7 +25,7 @@ class MainVC: UIViewController {
     
     private var goldenAreaCGRect: CGRect {
         // make size
-        let goldenRectSize = CGSize(width: screenBound.width*0.8, height: screenBound.height*0.3)
+        let goldenRectSize = CGSize(width: screenBound.width * 0.8, height: screenBound.height * 0.3)
         // make origin
         let goldenRectX = (screenBound.width - goldenRectSize.width) / 2
         let goldenRectY = (screenBound.height - goldenRectSize.height) / 2
@@ -34,10 +34,12 @@ class MainVC: UIViewController {
     }
     
     private lazy var textLayer: CATextLayer = {
-        let textLayer = CATextLayer()
         
-        textLayer.frame = CGRect(x: 0, y: 80, width: screenBound.width, height: 18)
-        textLayer.fontSize = 12
+        let topOrigin = view.safeAreaInsets.top
+        
+        let textLayer = CATextLayer()
+        textLayer.frame = CGRect(x: 0, y: topOrigin, width: screenBound.width, height: 25)
+        textLayer.fontSize = 15
         textLayer.alignmentMode = .center
         textLayer.string = "Please hold your beautiful 👀 within the golden box! :D"
         textLayer.isWrapped = true
@@ -52,7 +54,7 @@ class MainVC: UIViewController {
     private var drawings: [CAShapeLayer] = [] {
         didSet {
             DispatchQueue.main.async {
-                self.drawings.forEach{self.view.layer.addSublayer($0) }
+                self.drawings.forEach{self.view.layer.addSublayer($0)}
             }
         }
     }
@@ -77,12 +79,13 @@ extension MainVC {
         
         // TODO: run a for loop on eyes tuple to be DRY
         if let faceRectOnScreen = face.faceRectOnScreen {
+            let eyes = face.eyes
             // left eye
-            let leftEyeCGPoints = face.eyes.leftEye.makeCGPoints(in: faceRectOnScreen)
+            let leftEyeCGPoints = eyes.leftEye.makeCGPoints(in: faceRectOnScreen)
             let leftEyeCAShape = drawEye(points: leftEyeCGPoints)
             faceFeaturesDrawings.append(leftEyeCAShape)
             // right eye
-            let rightEyeCGPoints = face.eyes.rightEye.makeCGPoints(in: faceRectOnScreen)
+            let rightEyeCGPoints = eyes.rightEye.makeCGPoints(in: faceRectOnScreen)
             let rightEyeCAShape = drawEye(points: rightEyeCGPoints)
             faceFeaturesDrawings.append(rightEyeCAShape)
         }
@@ -120,7 +123,7 @@ extension MainVC: MainVMViewDelegate {
         DispatchQueue.main.async {
             if (self.textLayer.string as? String) != text {
                 self.textLayer.string = text
-                UINotificationFeedbackGenerator().notificationOccurred(.warning)
+                UINotificationFeedbackGenerator().notificationOccurred(.success)
             }
         }
     }
@@ -128,11 +131,10 @@ extension MainVC: MainVMViewDelegate {
     func handleFaceDetectionResults(_ observedFace: Face) {
         var observedFace = observedFace
         observedFace.faceRectOnScreen = previewLayer.layerRectConverted(fromMetadataOutputRect: observedFace.faceRectOnVision)
-        // manage drawings
+        
         clearDrawings()
         drawings = makeDrawings(from: observedFace)
         
-        // make face & handle label
         mainVM.handleLabel(face: observedFace, goldenArea: goldenAreaCGRect)
     }
     
@@ -142,7 +144,5 @@ extension MainVC: MainVMViewDelegate {
         previewLayer.frame = view.frame
     }
     
-    func clearDrawings() {
-        drawings.forEach{ drawing in drawing.removeFromSuperlayer() }
-    }
+    func clearDrawings() { drawings.forEach{$0.removeFromSuperlayer()} }
 }
